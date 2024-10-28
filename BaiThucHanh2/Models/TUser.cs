@@ -15,3 +15,4 @@ public partial class TUser
 
     public virtual ICollection<TNhanVien> TNhanViens { get; set; } = new List<TNhanVien>();
 }
+

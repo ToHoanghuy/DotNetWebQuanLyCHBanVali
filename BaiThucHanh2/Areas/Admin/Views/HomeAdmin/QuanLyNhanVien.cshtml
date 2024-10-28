@@ -1,0 +1,66 @@
+﻿
+@using X.PagedList.Mvc.Core
+@using BaiThucHanh2.Models
+@model X.PagedList.IPagedList<TNhanVien>
+
+@{
+    ViewData["Title"] = "QuanLyNhanVien";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>Danh sách nhân viên</h2>
+
+<p>
+    <a asp-action="ThemNguoiDungMoi">Thêm nhân viên mới</a>
+</p>
+<p>@TempData["Message"]</p>
+
+<table class="table">
+    <thead>
+        <tr class="table-warning">
+            <th>Mã Nhân Viên</th>
+            <th>Tên Người Dùng</th>
+            <th>Tên Nhân Viên</th>
+            <th>Ngày Sinh</th>
+            <th>Số Điện Thoại 1</th>
+            <th>Số Điện Thoại 2</th>
+            <th>Địa Chỉ</th>
+            <th>Chức Vụ</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 0;
+            string @cls = "table-success";
+        }
+        @foreach (var item in Model)
+        {
+            i++;
+            cls = (i % 2 == 0) ? "table-primary" : "table-success";
+            <tr class="@cls">
+                <td>@Html.DisplayFor(modelItem => item.MaNhanVien)</td>
+                <td>@Html.DisplayFor(modelItem => item.Username)</td>
+                <td>@Html.DisplayFor(modelItem => item.TenNhanVien)</td>
+                <td>@Html.DisplayFor(modelItem => item.NgaySinh)</td>
+                <td>@Html.DisplayFor(modelItem => item.SoDienThoai1)</td>
+                <td>@Html.DisplayFor(modelItem => item.SoDienThoai2)</td>
+                <td>@Html.DisplayFor(modelItem => item.DiaChi)</td>
+                <td>@Html.DisplayFor(modelItem => item.ChucVu)</td>
+                <td>
+                    <a asp-action="SuaNhanVien" asp-route-maNhanVien="@item.MaNhanVien">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MaNhanVien">Details</a> |
+                    @* <a asp-action="XoaNhanVien" asp-route-maNhanVien="@item.MaNhanVien">Delete</a> *@
+                    <form asp-action="XoaNguoiDung" asp-route-id="@item.MaNhanVien" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="employee__pagination">
+    @Html.PagedListPager(Model, page => Url.Action("QuanLyNhanVien", new { page = page }))
+</div>

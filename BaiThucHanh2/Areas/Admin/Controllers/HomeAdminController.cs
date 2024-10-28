@@ -105,5 +105,77 @@ namespace BaiThucHanh2.Areas.Admin.Controllers
             TempData["Message"] = "Sản phẩm đã được xóa";
             return RedirectToAction("DanhMucSanPham", "HomeAdmin"); ;
         }
+
+        [Route("quanlynhanvien")]
+        public IActionResult QuanLyNhanVien(int? page)
+        {
+            int pageSize = 12;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+
+            var lstnhanvien = db.TNhanViens.AsNoTracking().OrderBy(x => x.TenNhanVien);
+            PagedList<TNhanVien> lst = new PagedList<TNhanVien>(lstnhanvien, pageNumber, pageSize);
+            return View(lst);
+        }
+
+        /*[Route("danhsachnguoidung")]
+        public IActionResult DanhSachNguoiDung(int? page)
+        {
+            int pageSize = 16;
+            int pageIndex = page == null ? 1 : page.Value;
+            var lst = db.TNhanViens.ToList();
+            PagedList<TNhanVien> listUsr = new PagedList<TNhanVien>(lst, pageIndex, pageSize);
+            return View(listUsr);
+        }*/
+
+        [Route("themnguoidungmoi")]
+        [HttpGet]
+        public IActionResult ThemNguoiDungMoi()
+        {
+            // ViewBag.MaChatLieu = new SelectList(db.TChatLieus, "MaChatLieu", "ChatLieu");
+            // ViewBag.MaHangSx = new SelectList(db.THangSxes, "MaHangSx", "HangSx");
+            // ViewBag.MaNuocSx = new SelectList(db.TQuocGia, "MaNuoc", "TenNuoc");
+            // ViewBag.MaLoai = new SelectList(db.TLoaiSps, "MaLoai", "Loai");
+            // ViewBag.MaDt = new SelectList(db.TLoaiDts, "MaDt", "TenLoai");
+
+            return View();
+        }
+        [Route("themnguoidungmoi")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ThemNguoiDungMoi(TNhanVien nhanVien)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Add(nhanVien);
+                db.SaveChanges();
+                return RedirectToAction("DanhSachNguoiDung");
+            }
+            return View(nhanVien);
+        }
+
+        [Route("xoanguoidung/{id}")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult XoaNguoiDung(string id)
+        {
+            // Tìm người dùng theo id
+            var nhanVien = db.TNhanViens.Find(id);
+
+            if (nhanVien == null)
+            {
+                // Nếu không tìm thấy, có thể thêm thông báo lỗi ở đây
+                return NotFound(); // Hoặc bạn có thể redirect về một trang khác
+            }
+
+            db.TNhanViens.Remove(nhanVien); // Xóa người dùng
+            db.SaveChanges(); // Lưu thay đổi
+
+            return RedirectToAction("QuanlyNhanVien"); // Chuyển hướng đến danh sách người dùng
+        }
+
+
+
     }
+
+
 }
